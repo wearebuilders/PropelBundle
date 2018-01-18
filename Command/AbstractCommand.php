@@ -54,9 +54,9 @@ abstract class AbstractCommand extends ContainerAwareCommand
     {
         $kernel = $this->getApplication()->getKernel();
 
-        $this->input = $input;
-        $this->output = $output;
-        $this->cacheDir = $kernel->getCacheDir().'/propel';
+        $this->input    = $input;
+        $this->output   = $output;
+        $this->cacheDir = $kernel->getCacheDir() . '/propel';
 
         if ($input->hasArgument('bundle') && '@' === substr($input->getArgument('bundle'), 0, 1)) {
             $this->bundle = $this
@@ -80,7 +80,7 @@ abstract class AbstractCommand extends ContainerAwareCommand
         $this->copySchemas($kernel, $this->cacheDir);
 
         // propel.json
-        $this->createPropelConfigurationFile($this->cacheDir.'/propel.json');
+        $this->createPropelConfigurationFile($this->cacheDir . '/propel.json');
     }
 
     /**
@@ -98,12 +98,12 @@ abstract class AbstractCommand extends ContainerAwareCommand
             list($bundle, $finalSchema) = $schema;
 
             if ($bundle) {
-                $file = $cacheDir.DIRECTORY_SEPARATOR.'bundle-'.$bundle->getName().'-'.$finalSchema->getBaseName();
+                $file = $cacheDir . DIRECTORY_SEPARATOR . 'bundle-' . $bundle->getName() . '-' . $finalSchema->getBaseName();
             } else {
-                $file = $cacheDir.DIRECTORY_SEPARATOR.'app-'.$finalSchema->getBaseName();
+                $file = $cacheDir . DIRECTORY_SEPARATOR . 'app-' . $finalSchema->getBaseName();
             }
 
-            $filesystem->copy((string) $finalSchema, $file, true);
+            $filesystem->copy((string)$finalSchema, $file, true);
 
             // the package needs to be set absolute
             // besides, the automated namespace to package conversion has
@@ -133,16 +133,18 @@ abstract class AbstractCommand extends ContainerAwareCommand
             if ($this->input->hasOption('connection')) {
                 $connections = $this->input->getOption('connection') ?: array($this->getDefaultConnection());
 
-                if (!in_array((string) $database['name'], $connections)) {
+                if (!in_array((string)$database['name'], $connections)) {
                     // we skip this schema because the connection name doesn't
                     // match the input values
                     $filesystem->remove($file);
-                    $this->output->writeln(sprintf(
-                        '<info>Skipped schema %s due to database name missmatch (%s not in [%s]).</info>',
-                        $finalSchema->getPathname(),
-                        $database['name'],
-                        implode(',', $connections)
-                    ));
+                    $this->output->writeln(
+                        sprintf(
+                            '<info>Skipped schema %s due to database name missmatch (%s not in [%s]).</info>',
+                            $finalSchema->getPathname(),
+                            $database['name'],
+                            implode(',', $connections)
+                        )
+                    );
                     continue;
                 }
             }
@@ -324,7 +326,7 @@ abstract class AbstractCommand extends ContainerAwareCommand
             $namespace = substr($namespace, 4);
         }
 
-        return 'src.'.str_replace('\\', '.', $namespace);
+        return 'src.' . str_replace('\\', '.', $namespace);
     }
 
     /**
@@ -347,12 +349,12 @@ abstract class AbstractCommand extends ContainerAwareCommand
 
             $namespaceDiff = substr($namespace, strlen($baseNamespace) + 1);
 
-            $bundlePath = realpath($bundle->getPath()) . '/' . str_replace('\\', '/', $namespaceDiff);
-            $appPath = realpath($this->getApplication()->getKernel()->getRootDir() . '/..');
+            $bundlePath = realpath($bundle->getPath()) . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $namespaceDiff);
+            $appPath    = realpath($this->getApplication()->getKernel()->getRootDir() . DIRECTORY_SEPARATOR . '..');
 
             $path = static::getRelativePath($bundlePath, $appPath);
 
-            return str_replace('/', '.', $path);
+            return str_replace(DIRECTORY_SEPARATOR, '.', $path);
         }
 
         //does not match or its a absolute path, so return it without suffix
@@ -384,7 +386,7 @@ abstract class AbstractCommand extends ContainerAwareCommand
     public static function getRelativePath($from, $to)
     {
         $from = '/' . trim($from, '/');
-        $to = '/' . trim($to, '/');
+        $to   = '/' . trim($to, '/');
 
         if (0 === $pos = strpos($from, $to)) {
             return substr($from, strlen($to) + ('/' === $to ? 0 : 1));
@@ -393,10 +395,10 @@ abstract class AbstractCommand extends ContainerAwareCommand
         $result = '';
         while ($to && false === strpos($from, $to)) {
             $result .= '../';
-            $to = substr($to, 0, strrpos($to, '/'));
+            $to     = substr($to, 0, strrpos($to, '/'));
         }
 
-        return !$to /*we reached root*/ ? $result . substr($from, 1) : $result. substr($from, strlen($to) + 1);
+        return !$to /*we reached root*/ ? $result . substr($from, 1) : $result . substr($from, strlen($to) + 1);
     }
 
     /**
@@ -449,6 +451,7 @@ abstract class AbstractCommand extends ContainerAwareCommand
     protected function getPlatform()
     {
         $config = $this->getContainer()->getParameter('propel.configuration');
+
         return $config['generator']['platformClass'];
     }
 }
