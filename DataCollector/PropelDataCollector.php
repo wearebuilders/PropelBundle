@@ -36,8 +36,8 @@ class PropelDataCollector extends DataCollector
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
         $this->data = array(
-            'queries'       => $this->cloneVar($this->buildQueries()),
-            'querycount'    => $this->countQueries(),
+            'queries'    => $this->cloneVar($this->buildQueries()),
+            'querycount' => $this->countQueries(),
         );
     }
 
@@ -80,7 +80,7 @@ class PropelDataCollector extends DataCollector
     {
         $time = 0;
         foreach ($this->data['queries'] as $query) {
-            $time += (float) $query['time'];
+            $time += (float)$query['time'];
         }
 
         return $time;
@@ -104,5 +104,16 @@ class PropelDataCollector extends DataCollector
     private function countQueries()
     {
         return count($this->logger->getQueries());
+    }
+
+    /**
+     * Resets this data collector to its initial state.
+     */
+    public function reset()
+    {
+        $this->data = array(
+            'queries'    => [],
+            'querycount' => 0,
+        );
     }
 }
