@@ -24,7 +24,7 @@
             <argument>%propel.configuration%</argument>
         </service>
 
-        <service id="propel.logger" class="%propel.logger.class%">
+        <service id="propel.logger" class="%propel.logger.class%" public="true">
             <tag name="monolog.logger" channel="propel" />
             <argument type="service" id="logger" on-invalid="null" />
             <argument type="service" id="debug.stopwatch" on-invalid="null" />
