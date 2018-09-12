@@ -156,6 +156,7 @@ class Configuration extends PropelConfiguration
                                             ->thenInvalid('The adapter %s is not supported. Please choose one of ' . implode(', ', $validAdapters))
                                         ->end()
                                     ->end()
+                                    ->scalarNode('adapterClass')->defaultNull()->end()
                                     ->scalarNode('dsn')
                                         ->isRequired()
                                         ->cannotBeEmpty()

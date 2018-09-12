@@ -85,7 +85,7 @@ EOT
         $manager->setConfiguration($this->getTemporaryConfiguration($config));
 
         $serviceContainer = Propel::getServiceContainer();
-        $serviceContainer->setAdapterClass($connectionName, $config['adapter']);
+        $serviceContainer->setAdapterClass($connectionName, $config['adapterClass'] ?? $config['adapter']);
         $serviceContainer->setConnectionManager($connectionName, $manager);
 
         $connection = Propel::getConnection($connectionName);
